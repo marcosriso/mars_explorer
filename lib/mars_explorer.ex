@@ -8,12 +8,12 @@ defmodule MarsExplorer do
   """
 
   def processCommands(roverName, roverInitialPosition, roverCommands) do
-    xpos = Enum.at(roverInitialPosition, 0)
-    ypos = Enum.at(roverInitialPosition, 1)
+    {xpos, _} = Enum.at(roverInitialPosition, 0) |> Integer.parse()
+    {ypos, _} = Enum.at(roverInitialPosition, 1) |> Integer.parse()
     direction = Enum.at(roverInitialPosition, 2)
 
-    roverStruct = %Rover{name: roverName, xpos: xpos, ypos: ypos, direction: direction}
-    totalCommmands = Enum.count(roverCommands)
+    roverStruct = %Rover{name: roverName, xpos: xpos, ypos: ypos, direction: direction, path: []}
+    totalCommmands = Enum.count(roverCommands) - 1
     startAt = 0
     processedRover = processCommands(roverCommands, roverStruct, totalCommmands, startAt)
   end
@@ -21,27 +21,51 @@ defmodule MarsExplorer do
   def move(roverStruct, command) do
     directions = ["N", "E", "S", "W"]
     direction = roverStruct.direction
-    case command do
-      "L" ->
-        i = Enum.find_index(directions, fn(x) -> x == direction end)
-        if (i==0) do
-          direction = Enum.at(directions, 3)
-        else
-          direction = Enum.at(directions, i-1)
-        end
-        roverStruct
-      "R" ->
-        i = Enum.find_index(directions, fn(x) -> x == direction end)
-        if (i==3) do
-          direction = Enum.at(directions, 2)
-        else
-          direction = Enum.at(directions, i+1)
-        end
-        roverStruct
-      "M" ->
-        i = Enum.find_index(directions, fn(x) -> x == direction end)
-        roverStruct
-    end
+
+    roverStruct =
+      case command do
+        "L" ->
+          i = Enum.find_index(directions, fn(x) -> x == direction end)
+          direction =
+            if (i==0) do
+              Enum.at(directions, 3)
+            else
+              Enum.at(directions, i-1)
+            end
+          Map.put(roverStruct, :direction, direction)
+
+        "R" ->
+          i = Enum.find_index(directions, fn(x) -> x == direction end)
+          direction =
+            if (i==3) do
+              Enum.at(directions, 0)
+            else
+              Enum.at(directions, i+1)
+            end
+          Map.put(roverStruct, :direction, direction)
+
+        "M" ->
+          axisMovementDefinition(roverStruct, direction)
+      end
+
+  end
+
+  def axisMovementDefinition(roverStruct, direction) do
+    xpos = roverStruct.xpos
+    ypos = roverStruct.ypos
+
+    roverStruct =
+      case direction do
+        "N" ->
+          Map.put(roverStruct, :ypos, (ypos + 1))
+        "E" ->
+          Map.put(roverStruct, :xpos, (xpos + 1))
+        "S" ->
+          Map.put(roverStruct, :ypos, (ypos - 1))
+        "W" ->
+          Map.put(roverStruct, :xpos, (xpos - 1))
+      end
+
 
   end
 
