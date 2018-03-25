@@ -1,10 +1,6 @@
 defmodule MarsExplorer do
   @moduledoc """
-  MarsExplorer keeps the contexts that define your domain
-  and business logic.
-
-  Contexts are also responsible for managing your data, regardless
-  if it comes from the database, an external API or others.
+  MarsExplorer logic
   """
 
   def processCommands(roverName, roverInitialPosition, roverCommands) do
@@ -12,7 +8,7 @@ defmodule MarsExplorer do
     {ypos, _} = Enum.at(roverInitialPosition, 1) |> Integer.parse()
     direction = Enum.at(roverInitialPosition, 2)
 
-    roverStruct = %Rover{name: roverName, xpos: xpos, ypos: ypos, direction: direction, path: []}
+    roverStruct = %Rover{name: roverName, xpos: xpos, ypos: ypos, direction: direction, path: [%{:x => xpos, :y => ypos}]}
     totalCommmands = Enum.count(roverCommands) - 1
     startAt = 0
     processedRover = processCommands(roverCommands, roverStruct, totalCommmands, startAt)
@@ -46,6 +42,9 @@ defmodule MarsExplorer do
 
         "M" ->
           axisMovementDefinition(roverStruct, direction)
+        _ ->
+          roverStruct
+          # Default: Ignores and do nothing right now.
       end
 
   end
@@ -53,22 +52,33 @@ defmodule MarsExplorer do
   def axisMovementDefinition(roverStruct, direction) do
     xpos = roverStruct.xpos
     ypos = roverStruct.ypos
+    path = roverStruct.path
 
     roverStruct =
       case direction do
         "N" ->
-          Map.put(roverStruct, :ypos, (ypos + 1))
+          ypos = ypos + 1
+          Map.put(roverStruct, :ypos, ypos)
         "E" ->
-          Map.put(roverStruct, :xpos, (xpos + 1))
+          xpos = xpos + 1
+          Map.put(roverStruct, :xpos, xpos)
         "S" ->
-          Map.put(roverStruct, :ypos, (ypos - 1))
+          ypos = ypos - 1
+          Map.put(roverStruct, :ypos, ypos)
         "W" ->
-          Map.put(roverStruct, :xpos, (xpos - 1))
+          xpos = xpos - 1
+          Map.put(roverStruct, :xpos, xpos)
+        _ ->
+          roverStruct
+          # Default: Ignores and do nothing right now.
       end
 
+    path = path ++ [%{:x => xpos, :y => ypos}]
+    roverStruct = %{roverStruct | path: path}
 
   end
 
+  # Recursive Magic
   def processCommands(roverCommands, roverStruct, totalCommmands, startAt) when startAt < totalCommmands do
     roverStruct = move(roverStruct, Enum.at(roverCommands, startAt))
     processCommands(roverCommands, roverStruct, totalCommmands, startAt + 1)

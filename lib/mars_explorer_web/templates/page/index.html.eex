@@ -1,3 +1,6 @@
+<div>
+    Based on this <a target="_blank" href="https://gist.github.com/pahagon/0c8d7c5664c335fbe3e4211ea82ad8cc">challenge by Xerpa</a>
+</div>
 <div class="jumbotron">
   <canvas id="planalto"></canvas>
 </div>
@@ -25,13 +28,13 @@
     <h4>Resources</h4>
     <ul>
       <li>
-        <a href="https://github.com/marcosriso/mars_explorer">App Repo at Github</a>
+        <a target="_blank" href="https://github.com/marcosriso/mars_explorer">App Repo at Github</a>
       </li>
       <li>
-        <a href="https://github.com/marcosriso/">Marcos Riso Github</a>
+        <a target="_blank" href="https://github.com/marcosriso/">Marcos Riso Github</a>
       </li>
       <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Phoenix Framework</a>
+        <a target="_blank" href="https://hexdocs.pm/phoenix/overview.html">Phoenix Framework</a>
       </li>
     </ul>
   </div>
