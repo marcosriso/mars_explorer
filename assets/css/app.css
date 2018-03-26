@@ -2,3 +2,9 @@
 .wtextarea {
     white-space: pre-wrap;
 }
+
+.jumbotron {
+   background: url("/images/acidalia_planitia_co_l.png");
+   background-repeat: no-repeat;
+   background-size: cover;
+}
